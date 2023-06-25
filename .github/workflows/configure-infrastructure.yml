@@ -30,7 +30,7 @@ jobs:
         run: |
           export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 
-          export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=MyKeyPair,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
+          export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
           echo "SSH_KEY"=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text) >> $GITHUB_ENV
 
