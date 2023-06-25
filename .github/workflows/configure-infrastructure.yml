@@ -40,6 +40,10 @@ jobs:
       #   run: |
       #     ssh -i private_key.pem ec2-user@${SSH_IP}
 
+      - name: Debug SSH_IP value
+        run: |
+          echo "SSH_IP=${SSH_IP}"
+
       - name: test connect
         uses: appleboy/ssh-action@master
         with:
