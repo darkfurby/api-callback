@@ -15,15 +15,6 @@ Resources:
     Properties:
       KeyName: MyKeyPair
 
-  # MyKeyPairSecret:
-  #   Type: 'AWS::SecretsManager::Secret'
-  #   Properties:
-  #     Description: Private key for MyKeyPair
-  #     SecretString: !Ref MyKeyPair
-  #     # GenerateSecretString:
-  #     #   SecretStringTemplate: '{"KeyName": "MyKeyPair"}'
-  #     #   GenerateStringKey: "PrivateKey"
-
   EC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
