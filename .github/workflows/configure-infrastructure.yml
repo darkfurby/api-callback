@@ -43,8 +43,8 @@ jobs:
       - name: test connect
         uses: appleboy/ssh-action@master
         with:
-          host: ${SSH_IP}
+          host: ${{ env.SSH_IP }}
           username: ec2-user
-          key: ${PRIVATE_KEY}
+          key: ${{ env.PRIVATE_KEY }}
           script: |
             echo hi
