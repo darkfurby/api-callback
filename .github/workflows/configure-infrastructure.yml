@@ -45,7 +45,7 @@ jobs:
       - name: test connect
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.SSH_IP }}
+          host: ${SSH_IP}
           username: ec2-user
           key: ${{ github.workspace }}/private_key.pem
           script: |
