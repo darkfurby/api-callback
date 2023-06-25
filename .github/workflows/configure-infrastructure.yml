@@ -40,21 +40,21 @@ jobs:
       #   run: |
       #     ssh -i private_key.pem ec2-user@${SSH_IP}
 
-      - name: Debug SSH_IP value
-        run: |
-          echo "SSH_IP=${{ env.SSH_IP }}"
-          echo "PRIVATE_KEY=${{ env.PRIVATE_KEY }}"
-
-      - name: test connect
-        uses: appleboy/ssh-action@master
-        with:
-          host: "${{ env.SSH_IP }}"
-          username: ec2-user
-          key: "${{ env.PRIVATE_KEY }}"
-          script: |
-            echo hi
-
-      # - name: use regular ssh
+      # - name: Debug SSH_IP value
       #   run: |
-      #     ssh-add - <<< "${{ env.PRIVATE_KEY }}"
-      #     ssh -o StrictHostKeyChecking=no ec2-user@
+      #     echo "SSH_IP=${{ env.SSH_IP }}"
+      #     echo "PRIVATE_KEY=${{ env.PRIVATE_KEY }}"
+
+      # - name: test connect
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: "${{ env.SSH_IP }}"
+      #     username: ec2-user
+      #     key: "${{ env.PRIVATE_KEY }}"
+      #     script: |
+      #       echo hi
+
+      - name: use regular ssh
+        run: |
+          ssh-add - <<< "${{ env.PRIVATE_KEY }}"
+          ssh -o StrictHostKeyChecking=no ec2-user@"${{ env.SSH_IP }}" 'echo hi'
