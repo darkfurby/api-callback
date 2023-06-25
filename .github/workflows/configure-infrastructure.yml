@@ -45,11 +45,11 @@ jobs:
 
           export ANSIBLE_PRIVATE_KEY_FILE=private_key.pem
 
-          export ANSIBLE_REMOTE_USER=ec2-user
+          export ANSIBLE_USER=ec2-user
 
           export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
 
-          ansible-playbook -i infrastructure/api_call_role/inventory.ini infrastructure/api_call_playbook.yml 
+          ansible-playbook -i infrastructure/api_call_role/dynamic_inventory.py infrastructure/api_call_playbook.yml 
 
       # - name: test connect
       #   run: |
