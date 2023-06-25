@@ -18,7 +18,7 @@ Resources:
     Properties:
       InstanceId: !Ref EC2Instance
 
-   IPAssociation:
+  IPAssociation:
     Type: 'AWS::EC2::EIPAssociation'
     Properties:
       AllocationId: !GetAtt ElasticIP.AllocationId
