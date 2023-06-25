@@ -61,7 +61,7 @@ Resources:
 
 Outputs:
   InstanceId:
-    Value: !Ref MyEC2Instance
+    Value: !Ref EC2Instance
 
   KeyPairSecretARN:
     Value: !Ref MyKeyPairSecret
