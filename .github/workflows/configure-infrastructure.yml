@@ -28,7 +28,7 @@ jobs:
 
       - name: Get vars for Ansible
         run: |
-          export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)"
+          export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=MyKeyPair,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
