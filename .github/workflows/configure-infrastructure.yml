@@ -41,7 +41,7 @@ jobs:
 
           export ANSIBLE_PRIVATE_KEY_FILE=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text)
 
-          chmod 600 private_key.pem
+          #chmod 600 private_key.pem
 
           # export ANSIBLE_PRIVATE_KEY_FILE=private_key.pem
 
