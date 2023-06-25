@@ -1,2 +1,5 @@
 *.pyc
 __pycache__/
+aws
+aws*
+new-key-pair.pem
