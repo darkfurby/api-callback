@@ -36,7 +36,7 @@ jobs:
 
           chmod 400 private_key.pem
 
-          echo "SSH_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
+          echo "SSH_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text) >> GITHUB_ENV
 
       - name: test connect
         run: |
