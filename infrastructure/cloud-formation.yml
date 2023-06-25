@@ -20,9 +20,9 @@ Resources:
     Properties:
       Description: Private key for MyKeyPair
       SecretString: !Ref MyKeyPair
-      GenerateSecretString:
-        SecretStringTemplate: '{"KeyName": "MyKeyPair"}'
-        GenerateStringKey: "PrivateKey"
+      # GenerateSecretString:
+      #   SecretStringTemplate: '{"KeyName": "MyKeyPair"}'
+      #   GenerateStringKey: "PrivateKey"
 
   EC2Instance:
     Type: 'AWS::EC2::Instance'
