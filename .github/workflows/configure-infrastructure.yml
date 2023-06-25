@@ -34,8 +34,6 @@ jobs:
 
           echo "PRIVATE_KEY"=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text) >> GITHUB_ENV
 
-          chmod 400 ${{ github.workspace }}/private_key.pem
-
           echo "SSH_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text) >> GITHUB_ENV
 
       # - name: test connect
