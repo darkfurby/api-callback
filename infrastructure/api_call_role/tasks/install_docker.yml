@@ -1,0 +1,35 @@
+---
+- name: Update all packages
+  yum:
+    name: '*'
+    state: latest
+    update_only: yes
+
+- name: Search for Docker package
+  yum:
+    list: docker
+  register: docker_package
+
+- name: Install Docker
+  yum:
+    name: docker
+    state: present
+  register: docker_install_result
+  ignore_errors: yes
+
+- name: Add user to the docker group
+  user:
+    name: ec2-user
+    groups: docker
+    append: yes
+
+- name: Enable Docker service at startup
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Initialize Docker Swarm
+  command: docker swarm init
+  register: swarm_init_output
+  ignore_errors: yes
