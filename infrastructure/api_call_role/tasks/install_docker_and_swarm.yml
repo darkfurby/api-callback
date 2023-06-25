@@ -1,6 +1,6 @@
 ---
 - name: Install Docker and Docker Swarm
-  hosts: api  # Replace with your actual target host or group
+  become: true
 
   tasks:
     - name: Install Docker dependencies
