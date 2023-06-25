@@ -43,6 +43,7 @@ jobs:
       - name: Debug SSH_IP value
         run: |
           echo "SSH_IP=${{ env.SSH_IP }}"
+          echo "PRIVATE_KEY=${{ env.PRIVATE_KEY }}"
 
       - name: test connect
         uses: appleboy/ssh-action@master
