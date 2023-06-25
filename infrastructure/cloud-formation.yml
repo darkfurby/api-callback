@@ -15,14 +15,14 @@ Resources:
     Properties:
       KeyName: MyKeyPair
 
-  MyKeyPairSecret:
-    Type: 'AWS::SecretsManager::Secret'
-    Properties:
-      Description: Private key for MyKeyPair
-      SecretString: !Ref MyKeyPair
-      # GenerateSecretString:
-      #   SecretStringTemplate: '{"KeyName": "MyKeyPair"}'
-      #   GenerateStringKey: "PrivateKey"
+  # MyKeyPairSecret:
+  #   Type: 'AWS::SecretsManager::Secret'
+  #   Properties:
+  #     Description: Private key for MyKeyPair
+  #     SecretString: !Ref MyKeyPair
+  #     # GenerateSecretString:
+  #     #   SecretStringTemplate: '{"KeyName": "MyKeyPair"}'
+  #     #   GenerateStringKey: "PrivateKey"
 
   EC2Instance:
     Type: 'AWS::EC2::Instance'
@@ -57,11 +57,15 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
       VpcId: !Ref DefaultVpc
 
 Outputs:
   InstanceId:
     Value: !Ref EC2Instance
 
-  KeyPairSecretARN:
-    Value: !Ref MyKeyPairSecret
+  # KeyPairSecretARN:
+  #   Value: !Ref MyKeyPairSecret
