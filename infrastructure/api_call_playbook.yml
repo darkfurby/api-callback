@@ -1,5 +1,5 @@
 - name: Run API Call Role
-  hosts: all
+  hosts: api
   become: true
 
   roles:
