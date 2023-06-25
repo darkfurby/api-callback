@@ -9,12 +9,27 @@ Parameters:
     Description: first subnet
 
 Resources:
+
+  MyKeyPair:
+    Type: 'AWS::EC2::KeyPair'
+    Properties:
+      KeyName: MyKeyPair
+
+  MyKeyPairSecret:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Description: Private key for MyKeyPair
+      SecretString: !Ref MyKeyPair
+      GenerateSecretString:
+        SecretStringTemplate: '{"KeyName": "MyKeyPair"}'
+        GenerateStringKey: "PrivateKey"
+
   EC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
       ImageId: ami-0c94855ba95c71c99 
       InstanceType: t2.micro
-      KeyName: my-key-pair
+      KeyName: !Ref MyKeyPair
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
       SubnetId: !Ref FirstSubnet
@@ -44,3 +59,9 @@ Resources:
           CidrIp: 0.0.0.0/0
       VpcId: !Ref DefaultVpc
 
+Outputs:
+  InstanceId:
+    Value: !Ref MyEC2Instance
+
+  KeyPairSecretARN:
+    Value: !Ref MyKeyPairSecret
