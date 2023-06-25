@@ -34,7 +34,7 @@ jobs:
 
           aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text > ${{ github.workspace }}/private_key.pem
 
-          chmod 400 private_key.pem
+          chmod 400 ${{ github.workspace }}/private_key.pem
 
           echo "SSH_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text) >> GITHUB_ENV
 
@@ -45,7 +45,7 @@ jobs:
       - name: test connect
         uses: appleboy/ssh-action@master
         with:
-          host: ${SSH_IP}
+          host: ${{ env.SSH_IP }}
           username: ec2-user
           key: ${{ github.workspace }}/private_key.pem
           script: |
