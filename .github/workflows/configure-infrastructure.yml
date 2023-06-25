@@ -38,6 +38,15 @@ jobs:
 
           echo "SSH_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text) >> GITHUB_ENV
 
+      # - name: test connect
+      #   run: |
+      #     ssh -i private_key.pem ec2-user@${SSH_IP}
+
       - name: test connect
-        run: |
-          ssh -i private_key.pem ec2-user@${SSH_IP}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${SSH_IP}
+          username: ec2-user
+          key: private_key.pem
+          script: |
+            echo hi
