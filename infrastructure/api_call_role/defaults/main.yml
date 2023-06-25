@@ -1,2 +1,12 @@
 ---
 # defaults file for api_call_role
+# docker_swarm_features: [Swarm]  # Specify 'swarm' to enable Docker Swarm
+
+# docker_package_dependencies:
+#   - container-selinux >= 2:2.74
+#   - containerd.io >= 1.6.4
+#   - docker-ce-cli
+#   - docker-ce-rootless-extras
+#   - libcgroup
+#   - fuse-overlayfs >= 0.7
+#   - slirp4netns >= 0.4
