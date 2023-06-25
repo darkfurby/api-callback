@@ -28,7 +28,8 @@
     name: docker
     state: started
     enabled: yes
-    
+
 - name: Initialize Docker Swarm
   command: docker swarm init
   register: swarm_init_output
+  ignore_errors: yes

@@ -39,11 +39,11 @@ jobs:
 
           export ANSIBLE_HOST_KEY_CHECKING=False
 
-          export ANSIBLE_PRIVATE_KEY_FILE=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text)
+          export PRIVATE_KEY=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text) > ~/.ssh/private.key
 
-          #chmod 600 private_key.pem
+          chmod 600 ~/.ssh/private.key
 
-          # export ANSIBLE_PRIVATE_KEY_FILE=private_key.pem
+          export ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/private.key
 
           export ANSIBLE_USER=ec2-user
 
