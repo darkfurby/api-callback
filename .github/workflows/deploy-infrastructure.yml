@@ -44,4 +44,4 @@ jobs:
 
       - name: Deploy infrastructure
         run: |
-          aws cloudformation ${{ github.event.inputs.create-or-update-stack }} --stack-name api-infrastructure --template-body file://infrastructure/cloud-formation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=DefaultVpc,ParameterValue=${DEFAULT_VPC} ParameterKey=FirstSubnet,ParameterValue=${FIRST_SUBNET}
+          aws cloudformation ${{ github.event.inputs.create-or-update-stack }} --stack-name api-infra --template-body file://infrastructure/cloud-formation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=DefaultVpc,ParameterValue=${DEFAULT_VPC} ParameterKey=FirstSubnet,ParameterValue=${FIRST_SUBNET}
