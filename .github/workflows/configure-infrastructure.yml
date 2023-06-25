@@ -37,11 +37,13 @@ jobs:
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
-          export PRIVATE_KEY=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text)
+          export PRIVATE_KEY=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text) > private_key.pem
+
+          chmod 400 private_key.pem
 
           export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
 
-          ansible-playbook -i infrastructure/api_call_role/inventory.ini infrastructure/api_call_playbook.yml -e "ansible_host=$SSH_IP" -e "ansible_user"=ec2-user -e ansible_ssh_private_key_file=$PRIVATE_KEY
+          ansible-playbook -i infrastructure/api_call_role/inventory.ini infrastructure/api_call_playbook.yml -e "ansible_host=$SSH_IP" -e "ansible_user"=ec2-user -e ansible_ssh_private_key_file=private_key.pem
 
       # - name: test connect
       #   run: |
