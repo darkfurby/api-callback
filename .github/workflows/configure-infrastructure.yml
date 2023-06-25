@@ -56,5 +56,4 @@ jobs:
 
       - name: use regular ssh
         run: |
-          ssh-add - <<< "${{ env.PRIVATE_KEY }}"
-          ssh -o StrictHostKeyChecking=no ec2-user@"${{ env.SSH_IP }}" 'echo hi'
+          ssh -o StrictHostKeyChecking=no -i "${{ env.PRIVATE_KEY }}" ec2-user@"${{ env.SSH_IP }}" 'echo hi'
