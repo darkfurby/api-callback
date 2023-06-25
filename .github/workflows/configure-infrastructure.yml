@@ -42,7 +42,7 @@ jobs:
 
       - name: Debug SSH_IP value
         run: |
-          echo "SSH_IP=${SSH_IP}"
+          echo "SSH_IP=${{ env.SSH_IP }}"
 
       - name: test connect
         uses: appleboy/ssh-action@master
