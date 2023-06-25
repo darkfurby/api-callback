@@ -13,7 +13,6 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       ImageId: ami-0c94855ba95c71c99 
-      VpcId: !Ref DefaultVpc
       InstanceType: t2.micro
       KeyName: my-key-pair
       SecurityGroupIds:
