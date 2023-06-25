@@ -1,14 +1,24 @@
 AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  DefaultVpc:
+    Type: String
+    Description: Default VPC
+  FirstSubnet:
+    Type: String
+    Description: first subnet
+
 Resources:
   EC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
       ImageId: ami-0c94855ba95c71c99 
+      VpcId: !Ref DefaultVpc
       InstanceType: t2.micro
       KeyName: my-key-pair
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
-      SubnetId: !Ref 'AWS::EC2::DefaultSubnet'
+      SubnetId: !Ref FirstSubnet
       Tags:
         - Key: Name
           Value: MyEC2Instance

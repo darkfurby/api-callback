@@ -36,6 +36,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
+      - name: Get required variables
+        run: |
+          echo "FIRST_SUBNET=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$(aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true' --query 'Vpcs[0].VpcId' --output text)" --query 'Subnets[0].SubnetId' --output text)" >> $GITHUB_ENV
+
+          echo "DEFAULT_VPC=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" --query "Vpcs[].VpcId" --output text)" >> $GITHUB_ENV
+
       - name: Deploy infrastructure
         run: |
-          aws cloudformation ${{ github.event.inputs.create-or-update-stack }} --stack-name api-infrastructure --template-body file://infrastructure/cloud-formation.yml --capabilities CAPABILITY_NAMED_IAM 
+          aws cloudformation ${{ github.event.inputs.create-or-update-stack }} --stack-name api-infrastructure --template-body file://infrastructure/cloud-formation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=DefaultVpc,ParameterValue=${DEFAULT_VPC} ParameterKey=FirstSubnet,ParameterValue=${FIRST_SUBNET}
