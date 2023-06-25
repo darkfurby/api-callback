@@ -26,13 +26,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
-      - name: Get vars for Ansible
+      - name: Get vars and keys for Ansible
         run: |
           export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
-          echo "SSH_KEY"=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text) >> $GITHUB_ENV
+          aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text > private_key.pem
+
+          chmod 400 private_key.pem
 
           echo "SSH_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
 
