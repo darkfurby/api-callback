@@ -40,4 +40,4 @@ jobs:
 
       - name: test connect
         run: |
-          ssh -i ${SSH_KEY} ec2-user@${SSH_IP}
+          ssh -i private_key.pem ec2-user@${SSH_IP}
