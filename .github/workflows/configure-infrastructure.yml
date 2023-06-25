@@ -26,30 +26,37 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
-      - name: Get vars and keys for Ansible
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install ansible -y
+
+      - name: Execute Ansible 
         run: |
           export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
-          echo "PRIVATE_KEY"=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text) >> $GITHUB_ENV
+          export PRIVATE_KEY=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text)
 
-          echo "SSH_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text) >> $GITHUB_ENV
+          export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
+
+          ansible-playbook -i infrastructure/api_call_role/inventory.ini infrastructure/api_call_playbook.yml -e "ansible_host=$SSH_IP" -e "ansible_user"=ec2-user -e ansible_ssh_private_key_file=$PRIVATE_KEY
 
       # - name: test connect
       #   run: |
       #     ssh -i private_key.pem ec2-user@${SSH_IP}
 
-      - name: Debug SSH_IP value
-        run: |
-          echo "SSH_IP=${{ env.SSH_IP }}"
-          echo "PRIVATE_KEY=${{ env.PRIVATE_KEY }}"
+      # - name: Debug SSH_IP value
+      #   run: |
+      #     echo "SSH_IP=${{ env.SSH_IP }}"
+      #     echo "PRIVATE_KEY=${{ env.PRIVATE_KEY }}"
 
-      - name: test connect
-        uses: appleboy/ssh-action@v0.1.3
-        with:
-          host: "${{ env.SSH_IP }}"
-          username: ec2-user
-          key: "${{ env.PRIVATE_KEY }}"
-          script: |
-            echo hi
+      # - name: test connect
+      #   uses: appleboy/ssh-action@v0.1.3
+      #   with:
+      #     host: "${{ env.SSH_IP }}"
+      #     username: ec2-user
+      #     key: "${{ env.PRIVATE_KEY }}"
+      #     script: |
+      #       echo hi

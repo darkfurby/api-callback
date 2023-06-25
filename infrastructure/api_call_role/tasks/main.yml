@@ -1,0 +1,4 @@
+---
+# tasks file for api_call_role
+- name: Include install_docker_and_swarm task
+  import_tasks: install_docker_and_swarm.yml

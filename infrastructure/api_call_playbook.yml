@@ -1,0 +1,6 @@
+- name: Run API Call Role
+  hosts: all
+  become: true
+
+  roles:
+    - api_call_role
