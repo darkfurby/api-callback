@@ -32,7 +32,7 @@ jobs:
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
-          aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text > private_key.pem
+          aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text > ${{ github.workspace }}/private_key.pem
 
           chmod 400 private_key.pem
 
@@ -47,6 +47,6 @@ jobs:
         with:
           host: ${SSH_IP}
           username: ec2-user
-          key: private_key.pem
+          key: ${{ github.workspace }}/private_key.pem
           script: |
             echo hi
