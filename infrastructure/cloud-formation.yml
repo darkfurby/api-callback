@@ -64,8 +64,8 @@ Resources:
       VpcId: !Ref DefaultVpc
 
 Outputs:
-  InstanceId:
-    Value: !Ref EC2Instance
+  KeyNameOutput:
+    Value: !Ref MyKeyPair
 
-  # KeyPairSecretARN:
-  #   Value: !Ref MyKeyPairSecret
+  ElasticIP:
+    Value: !GetAtt ElasticIP.PublicIp

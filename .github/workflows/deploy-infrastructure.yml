@@ -1,4 +1,4 @@
-name: "Deploy infrastructure"
+name: "Deploy infrastructure and configure it with Ansible"
 
 on:
   workflow_dispatch:
@@ -45,3 +45,17 @@ jobs:
       - name: Deploy infrastructure
         run: |
           aws cloudformation ${{ github.event.inputs.create-or-update-stack }} --stack-name api-infra --template-body file://infrastructure/cloud-formation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=DefaultVpc,ParameterValue=${DEFAULT_VPC} ParameterKey=FirstSubnet,ParameterValue=${FIRST_SUBNET}
+      
+      - name: Save vars for Ansible
+        run: |
+          echo "KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)" >> $GITHUB_ENV
+
+          echo "DESCRIBE_KEY_PAIRS"=$(aws ec2 describe-key-pairs --filters Name=MyKeyPair,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) >> $GITHUB_ENV
+
+          echo "SSH_KEY"=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text) >> $GITHUB_ENV
+
+          echo "SSH_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
+
+      - name: test connect
+        run: |
+          ssh -i $SSH_KEY ec2-user@$SSH_IP
