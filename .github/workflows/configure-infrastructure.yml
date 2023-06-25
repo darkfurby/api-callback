@@ -49,7 +49,7 @@ jobs:
 
           export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
 
-          ansible-playbook infrastructure/api_call_playbook.yml --limit $SSH_IP
+          ansible-playbook -i infrastructure/inventory.ini infrastructure/api_call_playbook.yml 
 
       # - name: test connect
       #   run: |
