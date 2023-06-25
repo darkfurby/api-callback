@@ -8,7 +8,7 @@ Resources:
       KeyName: my-key-pair
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
-      SubnetId: !Ref DefaultSubnet
+      SubnetId: !Ref 'AWS::EC2::DefaultSubnet'
       Tags:
         - Key: Name
           Value: MyEC2Instance
