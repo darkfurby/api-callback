@@ -32,7 +32,7 @@ Resources:
     Type: 'AWS::EC2::EIPAssociation'
     Properties:
       AllocationId: !GetAtt ElasticIP.AllocationId
-      NetworkInterfaceId: !GetAtt EC2Instance.NetworkInterfaces[0].Ref
+      InstanceId: !Ref EC2Instance
 
   EC2SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
