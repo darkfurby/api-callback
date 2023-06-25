@@ -2,6 +2,15 @@ name: "Deploy infrastructure"
 
 on:
   workflow_dispatch:
+    inputs:
+      create-or-update-stack:
+        type: choice
+        description: 'update or create stack'
+        required: true
+        default: 'update-stack'
+        options:
+          - 'update-stack'
+          - 'create-stack'
 
 
 jobs:
@@ -19,3 +28,14 @@ jobs:
           sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
           which aws
           aws --version
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
+
+      - name: Deploy infrastructure
+        run: |
+          aws cloudformation ${{ github.event.inputs.create-or-update-stack }} --stack-name api-infrastructure --template-body file://infrastructure/cloud-formation.yml --capabilities CAPABILITY_NAMED_IAM 
