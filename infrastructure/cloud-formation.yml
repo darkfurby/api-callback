@@ -85,3 +85,7 @@ Outputs:
 
   ElasticIP:
     Value: !GetAtt ElasticIP.PublicIp
+  
+  ECRRepositoryARN:
+    Value: !Ref MyECRRepository
+    Description: The ARN of the ECR repository

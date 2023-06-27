@@ -11,6 +11,18 @@ on:
         options:
           - 'update-stack'
           - 'create-stack'
+      build:
+        type: boolean
+        description: "Build image"
+        default: true
+      push:
+        type: boolean
+        description: "Push image"
+        default: true
+      deploy:
+        type: boolean
+        description: "Deploy image"
+        default: true
 
 jobs:
   build-and-deploy:
@@ -37,11 +49,30 @@ jobs:
 
       - name: Get required variables
         run: |
-          echo "FIRST_SUBNET=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$(aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true' --query 'Vpcs[0].VpcId' --output text)" --query 'Subnets[0].SubnetId' --output text)" >> $GITHUB_ENV
+          echo "HOST_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text) >> $GITHUB_ENV
 
-          echo "DEFAULT_VPC=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" --query "Vpcs[].VpcId" --output text)" >> $GITHUB_ENV
+          echo "ACC_ID"=$(aws sts get-caller-identity --query "Account" --output text)
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ACC_ID.dkr.ecr.us-east-1.amazonaws.com) >> $GITHUB_ENV
 
-      - name: Deploy infrastructure
+      - name: Login to ECR
         run: |
-          aws cloudformation ${{ github.event.inputs.create-or-update-stack }} --stack-name api-infra --template-body file://infrastructure/cloud-formation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=DefaultVpc,ParameterValue=${DEFAULT_VPC} ParameterKey=FirstSubnet,ParameterValue=${FIRST_SUBNET}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build image
+        if: ${{ github.event.inputs.build == 'true' }}
+        run: |
+          docker build ./apicallapp -t myapi:"${{ github.sha }}"
+          docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:"${{ github.sha }}"
+          docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:latest
+      
+      - name: Push Image
+        if: ${{ github.event.inputs.push == 'true' }}
+        run: |
+          docker push --all-tags ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi
+      
+      - name: Deploy image
+        if: ${{ github.event.inputs.deploy == 'true' }}
+        run: |
+          echo echo
+
       
