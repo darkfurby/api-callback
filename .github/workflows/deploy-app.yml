@@ -51,8 +51,7 @@ jobs:
         run: |
           echo "HOST_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text) >> $GITHUB_ENV
 
-          echo "ACC_ID"=$(aws sts get-caller-identity --query "Account" --output text)
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ACC_ID.dkr.ecr.us-east-1.amazonaws.com) >> $GITHUB_ENV
+          echo "ACC_ID"=$(aws sts get-caller-identity --query "Account" --output text) >> $GITHUB_ENV
 
       - name: Login to ECR
         run: |
