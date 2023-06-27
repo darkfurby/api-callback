@@ -1,0 +1,47 @@
+name: "Deploy Application"
+
+on:
+  workflow_dispatch:
+    inputs:
+      create-or-update-stack:
+        type: choice
+        description: 'update or create stack'
+        required: true
+        default: 'update-stack'
+        options:
+          - 'update-stack'
+          - 'create-stack'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout the repo 
+        uses: actions/checkout@v3
+      
+      - name: Upgrade AWS CLI version
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
+          unzip awscliv2.zip
+          sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+          which aws
+          aws --version
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
+
+      - name: Get required variables
+        run: |
+          echo "FIRST_SUBNET=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$(aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true' --query 'Vpcs[0].VpcId' --output text)" --query 'Subnets[0].SubnetId' --output text)" >> $GITHUB_ENV
+
+          echo "DEFAULT_VPC=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" --query "Vpcs[].VpcId" --output text)" >> $GITHUB_ENV
+
+      - name: Deploy infrastructure
+        run: |
+          aws cloudformation ${{ github.event.inputs.create-or-update-stack }} --stack-name api-infra --template-body file://infrastructure/cloud-formation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=DefaultVpc,ParameterValue=${DEFAULT_VPC} ParameterKey=FirstSubnet,ParameterValue=${FIRST_SUBNET}
+      
