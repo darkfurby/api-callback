@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  DefaultVpc:
+    Type: String
+    Description: Default VPC
+  FirstSubnet:
+    Type: String
+    Description: first subnet
+
+Resources:
+
+  MyKeyPair2:
+    Type: 'AWS::EC2::KeyPair'
+    Properties:
+      KeyName: MyKeyPair
+
+  EC2Instance2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-0f1a6835595fb9246
+      InstanceType: t2.micro
+      KeyName: !Ref MyKeyPair2
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup2
+      SubnetId: !Ref FirstSubnet
+      Tags:
+        - Key: Name
+          Value: MyEC2Instance
+
+  ElasticIP2:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      InstanceId: !Ref EC2Instance2
+
+  IPAssociation2:
+    Type: 'AWS::EC2::EIPAssociation'
+    Properties:
+      AllocationId: !GetAtt ElasticIP2.AllocationId
+      InstanceId: !Ref EC2Instance2
+
+  EC2SecurityGroup2:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Security group for EC2 instance
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref DefaultVpc
+
+Outputs:
+  KeyNameOutput:
+    Value: !Ref MyKeyPair2
+
+  ElasticIP:
+    Value: !GetAtt ElasticIP2.PublicIp
