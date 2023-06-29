@@ -81,13 +81,19 @@ jobs:
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
-          aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text > ~/.ssh/private_key.pem
+          export ANSIBLE_HOST_KEY_CHECKING=False
 
-          cat ~/.ssh/private_key.pem
+          aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text > private_key.pem
 
-          chmod 600 ~/.ssh/private_key.pem
+          chmod 600 private_key.pem
 
-          scp -vvv -i private_key.pem docker-compose-callme.yml ec2-user@${HOST_IP}:/~/docker-compose-callme.yml
+          export ANSIBLE_PRIVATE_KEY_FILE=private_key.pem
+
+          export ANSIBLE_USER=ec2-user
+
+          export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra-helper --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
+
+          ansible-playbook -i deployment/callme/callmerole/dynamic_inventory.py deployment/callme/callme_playbook.yml --limit api
 
 
       

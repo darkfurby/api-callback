@@ -1,0 +1,9 @@
+---
+- name: Copy Docker Compose file
+  copy:
+    src: docker-compose-callme.yml
+    dest: /~/docker-compose.yml
+
+- name: Start Docker services from the Compose file
+  become: true
+  command: docker-compose -f /~/docker-compose.yml up -d
