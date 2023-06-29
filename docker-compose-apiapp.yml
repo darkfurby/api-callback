@@ -7,7 +7,7 @@ services:
     ports:
       - "80:8000"
     environment:
-      - CALL_ME_HOST=http://callme:8001/callme
+      - CALL_ME_HOST=
       - HOST_IP=apicallapp
     restart: unless-stopped
 
