@@ -61,22 +61,22 @@ jobs:
       - name: Build image
         if: ${{ github.event.inputs.build == 'true' }}
         run: |
-          docker build ./callme -t callme:"${{ github.sha }}"
-          docker tag callme:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:"${{ github.sha }}"
-          docker tag callme:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:latest
+          docker build ./myapi -t myapi:"${{ github.sha }}"
+          docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:"${{ github.sha }}"
+          docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:latest
 
-          echo "IMAGE"=${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:"${{ github.sha }}" >> $GITHUB_ENV
+          echo "IMAGE"=${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:"${{ github.sha }}" >> $GITHUB_ENV
 
 
       - name: use latest
         if: ${{ github.event.inputs.build != 'true' }}
         run: |
-          echo "IMAGE"=${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:latest >> $GITHUB_ENV
+          echo "IMAGE"=${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:latest >> $GITHUB_ENV
       
       - name: Push Image
         if: ${{ github.event.inputs.push == 'true' }}
         run: |
-          docker push --all-tags ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme
+          docker push --all-tags ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi
 
       - name: Update image version in docker-compose file
         if: ${{ github.event.inputs.deploy == 'true' }}
