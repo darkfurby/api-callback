@@ -101,7 +101,7 @@ jobs:
 
           export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra-helper --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
 
-          ansible-playbook -i deployment/callme/callmerole/dynamic_inventory.py deployment/callme/callme_playbook.yml --limit api
+          ansible-playbook -i deployment/callme/callmerole/dynamic_inventory.py deployment/callme/callme_playbook.yml --limit api --extra-vars "aws_account_id=${ACC_ID} aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} aws_region=us-east-1" image=${IMAGE}
 
 
       
