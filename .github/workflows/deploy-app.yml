@@ -61,7 +61,7 @@ jobs:
       - name: Build image
         if: ${{ github.event.inputs.build == 'true' }}
         run: |
-          docker build ./myapi -t myapi:"${{ github.sha }}"
+          docker build ./apicallapp -t myapi:"${{ github.sha }}"
           docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:"${{ github.sha }}"
           docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:latest
 
