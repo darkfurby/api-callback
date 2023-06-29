@@ -10,6 +10,7 @@ services:
       - CALL_ME_HOST=
       - HOST_IP=apicallapp
     restart: unless-stopped
+    hostname: apicallapp
 
 networks:
   mynetwork:
