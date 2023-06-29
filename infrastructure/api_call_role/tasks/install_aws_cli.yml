@@ -1,0 +1,23 @@
+---
+    - name: Download AWS CLI package
+      shell: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      args:
+        chdir: /tmp
+
+    - name: Extract AWS CLI package
+      shell: unzip awscliv2.zip
+      args:
+        chdir: /tmp
+
+    - name: Install AWS CLI
+      shell: sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+      args:
+        chdir: /tmp/aws
+
+    - name: Verify AWS CLI installation
+      command: which aws
+      register: aws_command
+
+    - name: Print AWS CLI version
+      command: aws --version
+      when: aws_command.rc == 0

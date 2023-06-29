@@ -1,0 +1,9 @@
+---
+    - name: Get ECR Login Password
+      command: aws ecr get-login-password --region us-east-1
+      register: ecr_login_password
+
+    - name: Docker Login to ECR
+      command: docker login --username AWS --password-stdin "{{ aws_account_id }}.dkr.ecr.us-east-1.amazonaws.com"
+      args:
+        stdin: "{{ ecr_login_password.stdout }}"
