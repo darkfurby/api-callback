@@ -87,7 +87,7 @@ jobs:
 
           chmod 600 private_key.pem
 
-          scp -i private_key.pem docker-compose-callme.yml ec2-user@${HOST_IP}:/~/docker-compose-callme.yml
+          scp -vvv -i private_key.pem docker-compose-callme.yml ec2-user@${HOST_IP}:/~/docker-compose-callme.yml
 
 
       
