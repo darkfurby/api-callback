@@ -88,13 +88,4 @@ jobs:
           scp -i ./private_key.pem ./docker-compose-callme.yml ec2-user@${HOST_IP}:/~/docker-compose-callme.yml
 
 
-      - name: copy file via ssh password
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${HOST_IP}
-          username: ec2-user
-          key: $(PRIVATE_KEY)
-          port: 22
-          source: "docker-compose-callme.yml"
-          target: ~/docker-compose-callme.yml
       
