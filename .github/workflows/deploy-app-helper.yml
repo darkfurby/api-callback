@@ -66,7 +66,7 @@ jobs:
       - name: Update image version in docker-compose file
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
-          yq eval '.services[].image = env(IMAGE)' -i docker-compose-callme.yml
+          yq eval '.services[].image = ${IMAGE}' -i docker-compose-callme.yml
 
       - name: Deploy 
         if: ${{ github.event.inputs.deploy == 'true' }}
