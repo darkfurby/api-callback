@@ -15,6 +15,10 @@ on:
         type: boolean
         description: "Deploy image"
         default: true
+      callmeip:
+        type: string
+        description: "ip or dns for call me service"
+        default: ''
 
 jobs:
   build-and-deploy:
@@ -38,6 +42,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
+
+      - name: provide callme ip/dns
+        run: |
+          yq eval '.services.apicallapp.environment += ["CALL_ME_HOST="]' docker-compose-apiapp.yml
+
 
       - name: Get required variables
         run: |
