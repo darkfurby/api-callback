@@ -1,4 +1,4 @@
-name: "Deploy helper application"
+name: "Deploy application helper"
 
 on:
   workflow_dispatch:
@@ -68,14 +68,6 @@ jobs:
         if: ${{ github.event.inputs.push == 'true' }}
         run: |
           docker push --all-tags ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme
-      
-      # - name: save image url
-      #   if: ${{ github.event.inputs.deploy == 'true' }}
-      #   run: |
-      #     SHA=${{ github.sha }}
-      #     DEFAULT="latest"
-      #     IMAGE="${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:${SHA:-$DEFAULT}"
-      #     echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
       - name: Update image version in docker-compose file
         if: ${{ github.event.inputs.deploy == 'true' }}

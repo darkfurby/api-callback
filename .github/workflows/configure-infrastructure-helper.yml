@@ -53,5 +53,5 @@ jobs:
 
           ansible-galaxy collection install amazon.aws
 
-          ansible-playbook -i infrastructure/api_call_role/dynamic_inventory.py infrastructure/api_call_playbook.yml --limit api --extra-vars "aws_account_id=${ACC_ID} aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} aws_region=us-east-1" 
+          ansible-playbook -i infrastructure/api_call_role/dynamic_inventory.py infrastructure/api_call_playbook.yml --limit api
 

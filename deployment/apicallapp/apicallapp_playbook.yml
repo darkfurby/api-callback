@@ -1,0 +1,6 @@
+- name: Run api call app deployment
+  hosts: all
+  become: true
+
+  roles:
+    - apicallapprole
