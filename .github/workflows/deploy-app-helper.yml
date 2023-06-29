@@ -55,19 +55,27 @@ jobs:
           docker build ./callme -t callme:"${{ github.sha }}"
           docker tag callme:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:"${{ github.sha }}"
           docker tag callme:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:latest
+
+          echo "IMAGE"=${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:"${{ github.sha }}" >> $GITHUB_ENV
+
+
+      - name: use latest
+        if: ${{ github.event.inputs.build != 'true' }}
+        run: |
+          echo "IMAGE"=${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:latest >> $GITHUB_ENV
       
       - name: Push Image
         if: ${{ github.event.inputs.push == 'true' }}
         run: |
           docker push --all-tags ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme
       
-      - name: save image url
-        if: ${{ github.event.inputs.deploy == 'true' }}
-        run: |
-          SHA=${{ github.sha }}
-          DEFAULT="latest"
-          IMAGE="${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:${SHA:-$DEFAULT}"
-          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+      # - name: save image url
+      #   if: ${{ github.event.inputs.deploy == 'true' }}
+      #   run: |
+      #     SHA=${{ github.sha }}
+      #     DEFAULT="latest"
+      #     IMAGE="${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:${SHA:-$DEFAULT}"
+      #     echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
       - name: Update image version in docker-compose file
         if: ${{ github.event.inputs.deploy == 'true' }}
