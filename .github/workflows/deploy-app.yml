@@ -17,8 +17,12 @@ on:
         default: true
       callmeip:
         type: string
-        description: "ip or dns for call me service"
-        default: ''
+        description: "call me url"
+        default: 'http://34.231.142.53/callme/'
+      ipmyapi:
+        type: string
+        description: "myapi ip"
+        default: '34.194.150.102'
 
 jobs:
   build-and-deploy:
@@ -45,7 +49,9 @@ jobs:
 
       - name: provide callme ip/dns
         run: |
-          yq eval '.services.apicallapp.environment += ["CALL_ME_HOST="]' docker-compose-apiapp.yml
+          yq eval '.services.apicallapp.environment += ["CALL_ME_HOST=${{ github.event.inputs.callmeip }}"]' docker-compose-apiapp.yml
+
+          # yq eval '.services.apicallapp.environment += ["HOST_IP="]' docker-compose-apiapp.yml
 
 
       - name: Get required variables
