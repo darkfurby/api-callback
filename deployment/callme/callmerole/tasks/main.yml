@@ -2,8 +2,3 @@
 - name: deploy compose
   import_tasks: deploy.yml
 
-- name: install aws cli
-  import_tasks: install_aws_cli.yml
-
-- name: login to ECR
-  import_tasks: login_to_ecr.yml
