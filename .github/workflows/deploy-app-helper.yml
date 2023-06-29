@@ -64,7 +64,7 @@ jobs:
       - name: save image url
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
-          echo "IMAGE"=$(${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:${{ github.sha || latest }}) >> $GITHUB_ENV
+          echo "IMAGE"=$(${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:${{ github.sha | latest }}) >> $GITHUB_ENV
 
       - name: Update image version in docker-compose file
         if: ${{ github.event.inputs.deploy == 'true' }}
