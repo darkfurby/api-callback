@@ -55,14 +55,17 @@ jobs:
           docker build ./apicallapp -t myapi:"${{ github.sha }}"
           docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:"${{ github.sha }}"
           docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:latest
-
-          echo "IMAGE"=$(${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:${{ github.sha }}) >> $GITHUB_ENV
       
       - name: Push Image
         if: ${{ github.event.inputs.push == 'true' }}
         run: |
           docker push --all-tags ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi
       
+      - name: save image url
+        if: ${{ github.event.inputs.deploy == 'true' }}
+        run: |
+          echo "IMAGE"=$(${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:${{ github.sha || latest }}) >> $GITHUB_ENV
+
       - name: Update image version in docker-compose file
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
@@ -75,11 +78,7 @@ jobs:
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
-          export ANSIBLE_HOST_KEY_CHECKING=False
-
           echo "PRIVATE_KEY"=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text) > $GITHUB_ENV
-
-          chmod 600 private_key.pem
 
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.4
