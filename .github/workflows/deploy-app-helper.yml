@@ -81,7 +81,12 @@ jobs:
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
-          echo "PRIVATE_KEY"=$(aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text) > $GITHUB_ENV
+          aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text > private_key.pem
+
+          chmod 600 private_key.pem
+
+          scp -i ./private_key.pem ./docker-compose-callme.yml ec2-user@${HOST_IP}:/~/docker-compose-callme.yml
+
 
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.4
