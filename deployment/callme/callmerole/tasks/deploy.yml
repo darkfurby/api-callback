@@ -4,6 +4,6 @@
     src: ../../../../docker-compose-callme.yml
     dest: /home/ec2-user/docker-compose.yml
 
-- name: Start Docker services from the Compose file
+- name: Start Docker service from the Compose file
   become: true
-  command: docker-compose -f /home/ec2-user/docker-compose.yml up -d
+  command: docker stack deploy -c /home/ec2-user/docker-compose.yml callme
