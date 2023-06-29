@@ -26,10 +26,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
-      - name: Install Ansible
-        run: |
-          sudo apt-get update
-          sudo apt-get install ansible -y
+      # - name: Install Ansible
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install ansible -y
 
       - name: Execute Ansible 
         run: |
