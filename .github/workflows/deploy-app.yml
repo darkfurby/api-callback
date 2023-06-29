@@ -51,7 +51,7 @@ jobs:
         run: |
           yq eval '.services.apicallapp.environment += ["CALL_ME_HOST=${{ github.event.inputs.callmeip }}"]' docker-compose-apiapp.yml
 
-          # yq eval '.services.apicallapp.environment += ["HOST_IP="]' docker-compose-apiapp.yml
+          yq eval '.services.apicallapp.environment += ["HOST_IP=${{ github.event.inputs.ipmyapi }}"]' docker-compose-apiapp.yml
 
 
       - name: Get required variables
