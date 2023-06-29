@@ -13,7 +13,7 @@ Resources:
   MyKeyPair2:
     Type: 'AWS::EC2::KeyPair'
     Properties:
-      KeyName: MyKeyPair
+      KeyName: MyKeyPair2
 
   EC2Instance2:
     Type: 'AWS::EC2::Instance'
@@ -54,9 +54,38 @@ Resources:
           CidrIp: 0.0.0.0/0
       VpcId: !Ref DefaultVpc
 
+  MyECRRepository2:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: callme
+      RepositoryPolicyText:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPushPull
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+              - ecr:BatchCheckLayerAvailability
+              - ecr:PutImage
+              - ecr:InitiateLayerUpload
+              - ecr:UploadLayerPart
+              - ecr:CompleteLayerUpload
+              - ecr:DescribeRepositories
+              - ecr:GetRepositoryPolicy
+              - ecr:ListImages
+              - ecr:DeleteRepository
+              - ecr:DeleteRepositoryPolicy
+              - ecr:SetRepositoryPolicy
+
 Outputs:
   KeyNameOutput:
     Value: !Ref MyKeyPair2
 
   ElasticIP:
     Value: !GetAtt ElasticIP2.PublicIp
+
+  ECRRepositoryARN:
+    Value: !Ref MyECRRepository2
+    Description: The ARN of the ECR repository
