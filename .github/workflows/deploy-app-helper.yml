@@ -41,7 +41,7 @@ jobs:
 
       - name: Get required variables
         run: |
-          echo "HOST_IP"=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text) >> $GITHUB_ENV
+          echo "HOST_IP"=$(aws cloudformation describe-stacks --stack-name api-infra-helper --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text) >> $GITHUB_ENV
 
           echo "ACC_ID"=$(aws sts get-caller-identity --query "Account" --output text) >> $GITHUB_ENV
 
@@ -52,21 +52,21 @@ jobs:
       - name: Build image
         if: ${{ github.event.inputs.build == 'true' }}
         run: |
-          docker build ./apicallapp -t myapi:"${{ github.sha }}"
-          docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:"${{ github.sha }}"
-          docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:latest
+          docker build ./callme -t callme:"${{ github.sha }}"
+          docker tag callme:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:"${{ github.sha }}"
+          docker tag callme:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:latest
       
       - name: Push Image
         if: ${{ github.event.inputs.push == 'true' }}
         run: |
-          docker push --all-tags ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi
+          docker push --all-tags ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme
       
       - name: save image url
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
           SHA=${{ github.sha }}
           DEFAULT="latest"
-          IMAGE="${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:${SHA:-$DEFAULT}"
+          IMAGE="${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/callme:${SHA:-$DEFAULT}"
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
       - name: Update image version in docker-compose file
@@ -77,7 +77,7 @@ jobs:
       - name: Deploy 
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
-          export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
+          export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra-helper --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
 
