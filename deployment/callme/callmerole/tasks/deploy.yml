@@ -5,7 +5,7 @@
     dest: /home/ec2-user/docker-compose.yml
 
 - name: pull image
-  command: docker pull ${{ image }}
+  command: docker pull {{ image }}
 
 - name: Start Docker service from the Compose file
   become: true
