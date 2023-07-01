@@ -5,6 +5,9 @@
   pip:
     name: yq
     state: present
+  become_user: root
+  vars:
+    ansible_become_method: su
 
 - name: Copy Docker Compose file
   copy:
