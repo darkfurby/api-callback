@@ -47,11 +47,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
-      - name: provide callme ip/dns
-        run: |
-          yq eval '.services.apicallapp.environment += ["CALL_ME_HOST=${{ github.event.inputs.callmeip }}", "HOST_IP=${{ github.event.inputs.ipmyapi }}"]' docker-compose-apiapp.yml
-
-
+      # - name: provide callme ip/dns
+      #   run: |
+      #     yq eval '.services.apicallapp.environment += ["CALL_ME_HOST=${{ github.event.inputs.callmeip }}", "HOST_IP=${{ github.event.inputs.ipmyapi }}"]' docker-compose-apiapp.yml
 
       - name: Get required variables
         run: |
@@ -91,6 +89,9 @@ jobs:
       - name: Deploy 
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
+
+          yq eval '.services.apicallapp.environment += ["CALL_ME_HOST=${{ github.event.inputs.callmeip }}", "HOST_IP=${{ github.event.inputs.ipmyapi }}"]' docker-compose-apiapp.yml
+
           export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
