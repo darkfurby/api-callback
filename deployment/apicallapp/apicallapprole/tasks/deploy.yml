@@ -11,7 +11,7 @@
 
 - name: Copy Docker Compose template file
   template:
-    src: ../../../../docker-compose-template.yml
+    src: ../../../../docker-compose-apiapp.yml
     dest: /home/ec2-user/docker-compose.yml
 
 - name: Replace variables in Docker Compose file
@@ -22,7 +22,7 @@
   loop:
     - { regexp: '^{{ "{{" }}\s*call_me_host\s*{{ "}}" }}$', replace: '{{ call_me_host }}' }
     - { regexp: '^{{ "{{" }}\s*host_ip\s*{{ "}}" }}$', replace: '{{ host_ip }}' }
-    
+
 - name: pull image
   command: docker pull {{ image }}
 
