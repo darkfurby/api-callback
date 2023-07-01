@@ -90,7 +90,7 @@ jobs:
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
 
-          yq eval '.services.apicallapp.environment += ["CALL_ME_HOST=${{ github.event.inputs.callmeip }}", "HOST_IP=${{ github.event.inputs.ipmyapi }}"]' docker-compose-apiapp.yml
+          # yq eval '.services.apicallapp.environment += ["CALL_ME_HOST=${{ github.event.inputs.callmeip }}", "HOST_IP=${{ github.event.inputs.ipmyapi }}"]' docker-compose-apiapp.yml
 
           export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 

@@ -28,7 +28,6 @@
     line: '\1{{ host_ip }}'
     state: present
 
-
 - name: pull image
   command: docker pull {{ image }}
 
