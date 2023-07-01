@@ -30,12 +30,12 @@
   command: docker pull {{ image }}
 
 - name: Generate docker-compose.yml from template
-      template:
-        src: /home/ec2-user/docker-compose.yml  # Replace with the actual path to the template file
-        dest: /home/ec2-user/docker-compose2.yml  # Replace with the actual path where you want the output file to be saved
-        vars:
-          call_me_host: "{{ lookup('env', 'call_me_host') }}"  # Retrieve the value of the environment variable
-          host_ip: "{{ lookup('env', 'HOST_IP') }}"  # You can add more variables here if needed
+  template:
+    src: /home/ec2-user/docker-compose.yml  # Replace with the actual path to the template file
+    dest: /home/ec2-user/docker-compose2.yml  # Replace with the actual path where you want the output file to be saved
+    vars:
+      call_me_host: "{{ lookup('env', 'call_me_host') }}"  # Retrieve the value of the environment variable
+      host_ip: "{{ lookup('env', 'HOST_IP') }}"  # You can add more variables here if needed
 
 - name: Start Docker service from the Compose file
   become: true
