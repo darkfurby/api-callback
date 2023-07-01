@@ -1,41 +1,11 @@
 ---
-
-# - name: Install yq on the target system
-#   become: true
-#   pip:
-#     name: yq
-#     state: present
-#   become_user: root
-#   vars:
-#     ansible_become_method: su
-
 - name: Copy Docker Compose template file
   template:
     src: ../../../../docker-compose-apiapp.yml
     dest: /home/ec2-user/docker-compose.yml
 
-# - name: Set environment variable on the host
-#   become_user: ec2-user
-#   shell: echo "export call_me_host={{ call_me_host }}" >> ~/.bashrc
-
-# - name: Set environment variable on the host
-#   become_user: ec2-user
-#   shell: echo "export host_ip={{ host_ip }}" >> ~/.bashrc
-
-# - name: Reload bashrc to apply changes (Optional)
-#   become_user: ec2-user
-#   shell: source ~/.bashrc
-
 - name: pull image
   command: docker pull {{ image }}
-
-# - name: Generate docker-compose.yml from template
-#   template:
-#     src: /home/ec2-user/docker-compose.yml  # Replace with the actual path to the template file
-#     dest: /home/ec2-user/docker-compose2.yml  # Replace with the actual path where you want the output file to be saved
-#     vars:
-#       call_me_host: "{{ lookup('env', 'call_me_host') }}"  # Retrieve the value of the environment variable
-#       host_ip: "{{ lookup('env', 'HOST_IP') }}"  # You can add more variables here if needed
 
 - name: Start Docker service from the Compose file
   become: true
