@@ -3,3 +3,4 @@ __pycache__/
 aws
 aws*
 new-key-pair.pem
+private_key.pem
