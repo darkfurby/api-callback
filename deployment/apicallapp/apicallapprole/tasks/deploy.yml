@@ -39,4 +39,4 @@
 
 - name: Start Docker service from the Compose file
   become: true
-  command: docker stack deploy -c /home/ec2-user/docker-compose2.yml apiapp
+  command: docker stack deploy -c /home/ec2-user/docker-compose.yml apiapp
