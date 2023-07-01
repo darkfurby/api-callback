@@ -77,9 +77,6 @@ jobs:
       - name: Deploy 
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
-
-          yq eval '.services.apicallapp.environment += ["DJANGO_ALLOWED_HOSTS=${{ github.event.inputs.ipmyapi }}"]' docker-compose-callme.yml
-
           export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra-helper --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
@@ -95,6 +92,9 @@ jobs:
           export ANSIBLE_USER=ec2-user
 
           export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra-helper --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
+
+          yq eval '.services.apicallapp.environment += ["DJANGO_ALLOWED_HOSTS=${SSH_IP}"]' docker-compose-callme.yml
+
 
           ansible-playbook -i deployment/callme/callmerole/dynamic_inventory.py deployment/callme/callme_playbook.yml --limit api --extra-vars "aws_account_id=${ACC_ID} aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} aws_region=us-east-1 image=${IMAGE}"
 
