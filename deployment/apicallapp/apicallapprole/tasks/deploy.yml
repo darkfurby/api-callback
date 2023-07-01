@@ -2,7 +2,7 @@
 
 - name: Install yq on the target system
   become: true
-  yum:
+  pip:
     name: yq
     state: present
 
