@@ -1,12 +1,12 @@
 ---
 
-- name: Modify Docker Compose file with yq
-  command: yq eval '.services.apicallapp.environment += ["CALL_ME_HOST={{ call_me_host }}", "HOST_IP={{ host_ip }}"]' ../../../../docker-compose-apiapp.yml
-
 - name: Copy Docker Compose file
   copy:
     src: ../../../../docker-compose-apiapp.yml
     dest: /home/ec2-user/docker-compose.yml
+
+- name: Modify Docker Compose file with yq
+  command: yq eval '.services.apicallapp.environment += ["CALL_ME_HOST={{ call_me_host }}", "HOST_IP={{ host_ip }}"]' /home/ec2-user/docker-compose.yml
 
 - name: pull image
   command: docker pull {{ image }}
