@@ -26,10 +26,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
-      - name: Install Ansible
-        run: |
-          sudo apt-get update
-          sudo apt-get install ansible -y
+      # - name: Install Ansible
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install ansible -y
 
       - name: Execute Ansible 
         run: |
@@ -51,5 +51,5 @@ jobs:
 
           export ACC_ID=$(aws sts get-caller-identity --query "Account" --output text)
 
-          ansible-playbook -i infrastructure/api_call_role/dynamic_inventory.py infrastructure/api_call_playbook.yml --limit api --extra-vars "aws_account_id=${ACC_ID}"
+          ansible-playbook -i infrastructure/api_call_role/dynamic_inventory.py infrastructure/api_call_playbook.yml --limit api
 

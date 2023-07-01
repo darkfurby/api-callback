@@ -6,6 +6,8 @@ services:
       - mynetwork 
     ports:
       - "80:8000"
+    environment:
+      - DJANGO_ALLOWED_HOSTS={{ host_ip }}
     restart: unless-stopped
     hostname: callme
 
