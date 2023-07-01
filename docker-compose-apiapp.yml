@@ -7,8 +7,8 @@ services:
     ports:
       - "80:8000"
     environment:
-      - CALL_ME_HOST={{ '{{' }} call_me_host {{ '}}' }}
-      - HOST_IP={{ '{{' }} host_ip {{ '}}' }}
+      - CALL_ME_HOST=${call_me_host}
+      - HOST_IP=${host_ip}
     restart: unless-stopped
     hostname: apicallapp
 
