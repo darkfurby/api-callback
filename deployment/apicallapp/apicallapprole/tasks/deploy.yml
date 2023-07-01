@@ -15,12 +15,15 @@
     dest: /home/ec2-user/docker-compose.yml
 
 - name: Set environment variable on the host
+  become_user: ec2-user
   shell: echo "export call_me_host={{ call_me_host }}" >> ~/.bashrc
 
 - name: Set environment variable on the host
+  become_user: ec2-user
   shell: echo "export host_ip={{ host_ip }}" >> ~/.bashrc
 
 - name: Reload bashrc to apply changes (Optional)
+  become_user: ec2-user
   shell: source ~/.bashrc
 
 - name: pull image
