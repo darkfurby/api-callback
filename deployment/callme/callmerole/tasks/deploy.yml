@@ -1,6 +1,6 @@
 ---
 - name: Copy Docker Compose file
-  copy:
+  template:
     src: ../../../../docker-compose-callme.yml
     dest: /home/ec2-user/docker-compose.yml
 
