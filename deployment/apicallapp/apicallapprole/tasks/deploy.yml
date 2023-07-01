@@ -14,19 +14,14 @@
     src: ../../../../docker-compose-apiapp.yml
     dest: /home/ec2-user/docker-compose.yml
 
-- name: Set CALL_ME_HOST environment variable in Docker Compose file
-  lineinfile:
+- name: Replace variables in Docker Compose file
+  replace:
     path: /home/ec2-user/docker-compose.yml
-    regexp: '^(\s+-\s+CALL_ME_HOST=).*'
-    line: '\1{{ call_me_host }}'
-    state: present
-
-- name: Set HOST_IP environment variable in Docker Compose file
-  lineinfile:
-    path: /home/ec2-user/docker-compose.yml
-    regexp: '^(\s+-\s+HOST_IP=).*'
-    line: '\1{{ host_ip }}'
-    state: present
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.replace }}'
+  loop:
+    - { regexp: '^{{ "{{" }}\s*call_me_host\s*{{ "}}" }}$', replace: '{{ call_me_host }}' }
+    - { regexp: '^{{ "{{" }}\s*host_ip\s*{{ "}}" }}$', replace: '{{ host_ip }}' }
 
 - name: pull image
   command: docker pull {{ image }}
