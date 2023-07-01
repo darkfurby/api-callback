@@ -9,6 +9,7 @@ services:
     environment:
       - CALL_ME_HOST={{ call_me_host }}
       - HOST_IP={{ host_ip }}
+      - DJANGO_ALLOWED_HOSTS={{ host_ip }}
     restart: unless-stopped
     hostname: apicallapp
 

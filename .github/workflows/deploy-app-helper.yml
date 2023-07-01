@@ -77,6 +77,9 @@ jobs:
       - name: Deploy 
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
+
+          yq eval '.services.apicallapp.environment += ["DJANGO_ALLOWED_HOSTS=${{ github.event.inputs.ipmyapi }}"]' docker-compose-callme.yml
+
           export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra-helper --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
