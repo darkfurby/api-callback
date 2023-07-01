@@ -108,7 +108,7 @@ jobs:
 
           export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
 
-          ansible-playbook -i deployment/apicallapp/apicallapprole/dynamic_inventory.py deployment/apicallapp/apicallapp_playbook.yml --limit api --extra-vars "aws_account_id=${ACC_ID} aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} aws_region=us-east-1 image=${IMAGE} call_me_host=${{ github.event.inputs.callmeip }} host_ip=$SSH_IP" 
+          ansible-playbook -i deployment/apicallapp/apicallapprole/dynamic_inventory.py deployment/apicallapp/apicallapp_playbook.yml --limit api --extra-vars "aws_account_id=${ACC_ID} aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} aws_region=us-east-1 image=${IMAGE} call_me_host={{ github.event.inputs.callmeip }} host_ip=${SSH_IP}" 
 
 
       
