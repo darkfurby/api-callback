@@ -1,5 +1,10 @@
 - name: Run API Call Role
   hosts: all
+  module_defaults:
+    group/aws:
+      aws_access_key: '{{ aws_access_key_id }}'
+      aws_secret_key: '{{ aws_secret_access_key }}'
+      region: 'us-east-1'
   become: true
 
   roles:

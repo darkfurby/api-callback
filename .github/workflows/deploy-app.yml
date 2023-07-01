@@ -1,4 +1,4 @@
-name: "Deploy Application"
+name: "Deploy application"
 
 on:
   workflow_dispatch:
@@ -15,6 +15,10 @@ on:
         type: boolean
         description: "Deploy image"
         default: true
+      callmeip:
+        type: string
+        description: "call me url"
+        default: 'http://34.231.142.53/callme/'
 
 jobs:
   build-and-deploy:
@@ -55,15 +59,48 @@ jobs:
           docker build ./apicallapp -t myapi:"${{ github.sha }}"
           docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:"${{ github.sha }}"
           docker tag myapi:"${{ github.sha }}" ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:latest
+
+          echo "IMAGE"=${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:"${{ github.sha }}" >> $GITHUB_ENV
+
+
+      - name: use latest
+        if: ${{ github.event.inputs.build != 'true' }}
+        run: |
+          echo "IMAGE"=${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi:latest >> $GITHUB_ENV
       
       - name: Push Image
         if: ${{ github.event.inputs.push == 'true' }}
         run: |
           docker push --all-tags ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/myapi
-      
-      - name: Deploy image
+
+      - name: Update image version in docker-compose file
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
-          echo echo
+          yq eval '.services[].image = env(IMAGE)' -i docker-compose-apiapp.yml
+
+      - name: Deploy 
+        if: ${{ github.event.inputs.deploy == 'true' }}
+        run: |
+
+          yq eval '.services.apicallapp.environment += ["CALL_ME_HOST=${{ github.event.inputs.callmeip }}", "HOST_IP=${{ github.event.inputs.ipmyapi }}"]' docker-compose-apiapp.yml
+
+          export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
+
+          export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
+
+          export ANSIBLE_HOST_KEY_CHECKING=False
+
+          aws ssm get-parameter --name /ec2/keypair/$DESCRIBE_KEY_PAIRS --with-decryption --query Parameter.Value --output text > private_key.pem
+
+          chmod 600 private_key.pem
+
+          export ANSIBLE_PRIVATE_KEY_FILE=private_key.pem
+
+          export ANSIBLE_USER=ec2-user
+
+          export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
+
+          ansible-playbook -i deployment/apicallapp/apicallapprole/dynamic_inventory.py deployment/apicallapp/apicallapp_playbook.yml --limit api --extra-vars "aws_account_id=${ACC_ID} aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} aws_region=us-east-1 image=${IMAGE} call_me_host=${{ github.event.inputs.callmeip }} host_ip=${SSH_IP}" 
+
 
       

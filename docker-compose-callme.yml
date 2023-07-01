@@ -1,13 +1,13 @@
 version: '3'
 services:
   callme:
-    image: 
+    image:
     networks:
-      - mynetwork
+      - mynetwork 
     ports:
-      - "8000:8000"
+      - "80:8000"
     restart: unless-stopped
+    hostname: callme
 
 networks:
   mynetwork:
-    name: mynetwork

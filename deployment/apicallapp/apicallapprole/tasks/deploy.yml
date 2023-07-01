@@ -1,0 +1,12 @@
+---
+- name: Copy Docker Compose template file
+  template:
+    src: ../../../../docker-compose-apiapp.yml
+    dest: /home/ec2-user/docker-compose.yml
+
+- name: pull image
+  command: docker pull {{ image }}
+
+- name: Start Docker service from the Compose file
+  become: true
+  command: docker stack deploy -c /home/ec2-user/docker-compose.yml apiapp

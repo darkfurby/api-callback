@@ -1,26 +1,17 @@
 version: '3'
 services:
   apicallapp:
-    build:
-      context: ./apicallapp
+    image:
     networks:
       - mynetwork
     ports:
-      - "8000:8000"
+      - "80:8000"
     environment:
-      - CALL_ME_HOST=http://callme:8001/callme
-      - HOST_IP=apicallapp
+      - CALL_ME_HOST={{ call_me_host }}
+      - HOST_IP={{ host_ip }}
     restart: unless-stopped
-
-  callme:
-    build:
-      context: ./callme
-    networks:
-      - mynetwork
-    ports:
-      - "8001:8000"
-    restart: unless-stopped
+    hostname: apicallapp
 
 networks:
   mynetwork:
-    name: mynetwork
+

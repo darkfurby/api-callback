@@ -26,16 +26,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
-      - name: Install Ansible
-        run: |
-          sudo apt-get update
-          sudo apt-get install ansible -y
+      # - name: Install Ansible
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install ansible -y
 
       - name: Execute Ansible 
         run: |
           export KEY_NAME=$(aws cloudformation describe-stacks --stack-name api-infra-helper --query "Stacks[0].Outputs[?OutputKey=='KeyNameOutput'].OutputValue" --output text)
 
           export DESCRIBE_KEY_PAIRS=$(aws ec2 describe-key-pairs --filters Name=key-name,Values=$KEY_NAME --query KeyPairs[*].KeyPairId --output text) 
+
+          export ACC_ID=$(aws sts get-caller-identity --query "Account" --output text)
 
           export ANSIBLE_HOST_KEY_CHECKING=False
 
@@ -48,6 +50,8 @@ jobs:
           export ANSIBLE_USER=ec2-user
 
           export SSH_IP=$(aws cloudformation describe-stacks --stack-name api-infra-helper --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
+
+          ansible-galaxy collection install amazon.aws
 
           ansible-playbook -i infrastructure/api_call_role/dynamic_inventory.py infrastructure/api_call_playbook.yml --limit api
 

@@ -1,0 +1,8 @@
+---
+
+- name: login to ecr
+  import_tasks: login_to_ecr.yml
+
+- name: deploy compose
+  import_tasks: deploy.yml
+

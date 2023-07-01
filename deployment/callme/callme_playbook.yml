@@ -1,0 +1,6 @@
+- name: Run callme app deployment
+  hosts: all
+  become: true
+
+  roles:
+    - callmerole
