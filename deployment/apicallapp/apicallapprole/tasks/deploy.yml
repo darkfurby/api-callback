@@ -1,22 +1,33 @@
 ---
 
-- name: Install yq on the target system
-  become: true
-  pip:
-    name: yq
-    state: present
-  become_user: root
-  vars:
-    ansible_become_method: su
+# - name: Install yq on the target system
+#   become: true
+#   pip:
+#     name: yq
+#     state: present
+#   become_user: root
+#   vars:
+#     ansible_become_method: su
 
 - name: Copy Docker Compose file
   copy:
     src: ../../../../docker-compose-apiapp.yml
     dest: /home/ec2-user/docker-compose.yml
 
-- name: Modify Docker Compose file with yq
-  become: true
-  command: yq eval '.services.apicallapp.environment += ["CALL_ME_HOST={{ call_me_host }}", "HOST_IP={{ host_ip }}"]' /home/ec2-user/docker-compose.yml
+- name: Set CALL_ME_HOST environment variable in Docker Compose file
+  lineinfile:
+    path: /home/ec2-user/docker-compose.yml
+    regexp: '^(\s+-\s+CALL_ME_HOST=).*'
+    line: '\1{{ call_me_host }}'
+    state: present
+
+- name: Set HOST_IP environment variable in Docker Compose file
+  lineinfile:
+    path: /home/ec2-user/docker-compose.yml
+    regexp: '^(\s+-\s+HOST_IP=).*'
+    line: '\1{{ host_ip }}'
+    state: present
+
 
 - name: pull image
   command: docker pull {{ image }}
