@@ -14,14 +14,14 @@
     src: ../../../../docker-compose-apiapp.yml
     dest: /home/ec2-user/docker-compose.yml
 
-- name: Replace variables in Docker Compose file
-  replace:
-    path: /home/ec2-user/docker-compose.yml
-    regexp: '{{ item.regexp | regex_escape }}'
-    replace: '{{ item.replace }}'
-  loop:
-    - { regexp: '^{{ "{{" }}\s*call_me_host\s*{{ "}}" }}$', replace: '{{ call_me_host }}' }
-    - { regexp: '^{{ "{{" }}\s*host_ip\s*{{ "}}" }}$', replace: '{{ host_ip }}' }
+- name: Set environment variable on the host
+  shell: echo "export call_me_host={{ call_me_host }}" >> ~/.bashrc
+
+- name: Set environment variable on the host
+  shell: echo "export host_ip={{ host_ip }}" >> ~/.bashrc
+
+- name: Reload bashrc to apply changes (Optional)
+  shell: source ~/.bashrc
 
 - name: pull image
   command: docker pull {{ image }}
